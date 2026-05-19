@@ -1,0 +1,102 @@
+# Phase 2 Checkpoint Key Inspection
+
+checkpoint_path: checkpoints/openpom_experiments_1_checkpoint2.pt
+state_dict_source: wrapped:model_state_dict
+
+## Top-Level Checkpoint
+checkpoint_type: dict
+top_level_key_count: 3
+top_level_keys:
+  - model_state_dict: type=OrderedDict shape=
+  - optimizer_state_dict: type=dict shape=
+  - global_step: type=int shape=
+has_optimizer_state_dict: True
+has_global_step: True
+global_step: 1984
+
+## State Dict
+state_dict_type: OrderedDict
+state_dict_key_count: 44
+tensor_entry_count: 44
+has_model_dot_prefix: False
+
+prefix_counts:
+  - ffn: 23
+  - mpnn: 11
+  - project_edge_feats: 2
+  - readout_set2set: 8
+
+category_counts:
+  - batchnorm: 15
+  - edge_projection: 2
+  - ffn: 8
+  - mpnn: 11
+  - set2set: 8
+
+first_100_state_dict_keys:
+  - mpnn.project_node_feats.0.weight: shape=(100, 134) dtype=torch.float32
+  - mpnn.project_node_feats.0.bias: shape=(100,) dtype=torch.float32
+  - mpnn.gnn_layer.bias: shape=(100,) dtype=torch.float32
+  - mpnn.gnn_layer.edge_func.0.weight: shape=(75, 6) dtype=torch.float32
+  - mpnn.gnn_layer.edge_func.0.bias: shape=(75,) dtype=torch.float32
+  - mpnn.gnn_layer.edge_func.2.weight: shape=(10000, 75) dtype=torch.float32
+  - mpnn.gnn_layer.edge_func.2.bias: shape=(10000,) dtype=torch.float32
+  - mpnn.gru.weight_ih_l0: shape=(300, 100) dtype=torch.float32
+  - mpnn.gru.weight_hh_l0: shape=(300, 100) dtype=torch.float32
+  - mpnn.gru.bias_ih_l0: shape=(300,) dtype=torch.float32
+  - mpnn.gru.bias_hh_l0: shape=(300,) dtype=torch.float32
+  - project_edge_feats.0.weight: shape=(100, 6) dtype=torch.float32
+  - project_edge_feats.0.bias: shape=(100,) dtype=torch.float32
+  - readout_set2set.lstm.weight_ih_l0: shape=(800, 400) dtype=torch.float32
+  - readout_set2set.lstm.weight_hh_l0: shape=(800, 200) dtype=torch.float32
+  - readout_set2set.lstm.bias_ih_l0: shape=(800,) dtype=torch.float32
+  - readout_set2set.lstm.bias_hh_l0: shape=(800,) dtype=torch.float32
+  - readout_set2set.lstm.weight_ih_l1: shape=(800, 200) dtype=torch.float32
+  - readout_set2set.lstm.weight_hh_l1: shape=(800, 200) dtype=torch.float32
+  - readout_set2set.lstm.bias_ih_l1: shape=(800,) dtype=torch.float32
+  - readout_set2set.lstm.bias_hh_l1: shape=(800,) dtype=torch.float32
+  - ffn.linears.0.weight: shape=(392, 400) dtype=torch.float32
+  - ffn.linears.0.bias: shape=(392,) dtype=torch.float32
+  - ffn.linears.1.weight: shape=(392, 392) dtype=torch.float32
+  - ffn.linears.1.bias: shape=(392,) dtype=torch.float32
+  - ffn.linears.2.weight: shape=(256, 392) dtype=torch.float32
+  - ffn.linears.2.bias: shape=(256,) dtype=torch.float32
+  - ffn.linears.3.weight: shape=(138, 256) dtype=torch.float32
+  - ffn.linears.3.bias: shape=(138,) dtype=torch.float32
+  - ffn.batchnorms.0.weight: shape=(392,) dtype=torch.float32
+  - ffn.batchnorms.0.bias: shape=(392,) dtype=torch.float32
+  - ffn.batchnorms.0.running_mean: shape=(392,) dtype=torch.float32
+  - ffn.batchnorms.0.running_var: shape=(392,) dtype=torch.float32
+  - ffn.batchnorms.0.num_batches_tracked: shape=() dtype=torch.int64
+  - ffn.batchnorms.1.weight: shape=(392,) dtype=torch.float32
+  - ffn.batchnorms.1.bias: shape=(392,) dtype=torch.float32
+  - ffn.batchnorms.1.running_mean: shape=(392,) dtype=torch.float32
+  - ffn.batchnorms.1.running_var: shape=(392,) dtype=torch.float32
+  - ffn.batchnorms.1.num_batches_tracked: shape=() dtype=torch.int64
+  - ffn.batchnorms.2.weight: shape=(256,) dtype=torch.float32
+  - ffn.batchnorms.2.bias: shape=(256,) dtype=torch.float32
+  - ffn.batchnorms.2.running_mean: shape=(256,) dtype=torch.float32
+  - ffn.batchnorms.2.running_var: shape=(256,) dtype=torch.float32
+  - ffn.batchnorms.2.num_batches_tracked: shape=() dtype=torch.int64
+
+## Key Architecture Evidence
+checkpoint_derived_architecture_shapes:
+  - number_atom_features / node_out_feats: mpnn.project_node_feats.0.weight shape=(100, 134)
+  - edge_hidden_feats / number_bond_features: mpnn.gnn_layer.edge_func.0.weight shape=(75, 6)
+  - node_out_feats * node_out_feats / edge_hidden_feats: mpnn.gnn_layer.edge_func.2.weight shape=(10000, 75)
+  - edge_out_feats / number_bond_features: project_edge_feats.0.weight shape=(100, 6)
+  - Set2Set LSTM layer 0 input: readout_set2set.lstm.weight_ih_l0 shape=(800, 400)
+  - FFN first layer: ffn.linears.0.weight shape=(392, 400)
+  - FFN embedding layer: ffn.linears.2.weight shape=(256, 392)
+  - classification output layer: ffn.linears.3.weight shape=(138, 256)
+checkpoint_derived_architecture_values:
+  - number_atom_features: 134
+  - number_bond_features: 6
+  - node_out_feats: 100
+  - edge_hidden_feats: 75
+  - edge_out_feats: 100
+  - set2set_input_dim: 200
+  - set2set_output_dim: 400
+  - ffn_hidden_list: [392, 392]
+  - ffn_embeddings: 256
+  - n_tasks: 138
