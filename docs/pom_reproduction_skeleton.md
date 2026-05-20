@@ -1,5 +1,15 @@
 # POM / MPNNPOM 复现骨架备忘录
 
+> Status: legacy broad-scope memo. This file preserves early architecture notes
+> and training-oriented context. For the current checkpoint-compatible
+> implementation target, use `docs/architecture_spec.md`,
+> `docs/checkpoint_compatibility.md`, and `reports/checkpoint_keys.txt` as the
+> authoritative sources. In particular, the current checkpoint-derived model
+> uses `node_out_feats=100`, `edge_hidden_feats=75`,
+> `edge_out_feats=100`, `num_step_message_passing=5`,
+> Set2Set `n_iters=3`, `n_layers=2`, and
+> `ffn_hidden_list=[392, 392]`.
+
 本文档用于回答“复现 POM 模型核心时，骨架层面必须先把握什么”。结论先放前面：
 
 复现的健康顺序是先建立最小可运行闭环，再逐层对齐细节：

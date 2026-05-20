@@ -7,6 +7,7 @@ from pom_repro.featurizer import (
     atom_features,
     bond_features,
 )
+from pom_repro.predict import predict_smiles
 
 __all__ = [
     "GraphConvConstants",
@@ -14,4 +15,5 @@ __all__ = [
     "GraphFeaturizer",
     "atom_features",
     "bond_features",
+    "predict_smiles",
 ]

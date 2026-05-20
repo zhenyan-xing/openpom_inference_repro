@@ -1,0 +1,29 @@
+# Phase 6 Checkpoint Load Report
+
+checkpoint_path: checkpoints/openpom_experiments_1_checkpoint2.pt
+state_dict_source: wrapped:model_state_dict
+model_key_count: 44
+checkpoint_key_count: 44
+direct_strict_success: True
+strict_load_success: True
+remap_used: False
+
+## Compatibility
+missing_key_count: 0
+unexpected_key_count: 0
+shape_mismatch_count: 0
+
+missing_keys:
+  - <none>
+
+unexpected_keys:
+  - <none>
+
+shape_mismatches:
+  - <none>
+
+error_message:
+  <none>
+
+result: PASS
+notes: Direct strict loading succeeded. No key remapping was used.
