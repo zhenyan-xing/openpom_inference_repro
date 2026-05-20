@@ -1,6 +1,6 @@
 # POM Inference Reproduction
 
-Checkpoint-compatible OpenPOM/POM inference utilities for predicting multilabel
+Checkpoint-compatible POM inference utilities for predicting multilabel
 odor probabilities from SMILES strings.
 
 This repo mirrors the Phase 7 parity path:
