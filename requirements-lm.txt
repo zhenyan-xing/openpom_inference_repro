@@ -1,0 +1,11 @@
+torch
+transformers
+safetensors
+tokenizers
+accelerate
+huggingface_hub
+pandas
+numpy
+tqdm
+rdkit
+scikit-learn

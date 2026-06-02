@@ -1,0 +1,38 @@
+# Phase 0 Environment Report
+
+Generated during final completion review on 2026-05-20.
+
+## Runtime
+
+```text
+python_executable: /home/xing/miniconda3/envs/pom_openpom_ref/bin/python
+python: 3.10.20 (main, Mar 11 2026, 17:46:40) [GCC 14.3.0]
+platform: Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39
+```
+
+## Core Packages
+
+```text
+numpy: 1.26.4
+torch: 2.4.0+cpu
+dgl: 2.4.0
+deepchem: 2.8.1.dev
+rdkit: 2026.03.2
+```
+
+## CUDA
+
+```text
+cuda_available: false
+cuda_device_count: 0
+```
+
+## Notes
+
+DeepChem emits warnings about optional dependencies that are not installed
+(`tensorflow`, `transformers`, `lightning`, `jax`). These optional packages are
+not required for the current OpenPOM-compatible inference path:
+
+```text
+GraphFeaturizer -> batch_graphs -> MPNNPOM -> load_checkpoint_strict
+```

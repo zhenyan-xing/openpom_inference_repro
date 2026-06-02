@@ -1,0 +1,45 @@
+name,shape,dtype,numel,prefix,category
+mpnn.project_node_feats.0.weight,"(100, 134)",torch.float32,13400,mpnn,mpnn
+mpnn.project_node_feats.0.bias,"(100,)",torch.float32,100,mpnn,mpnn
+mpnn.gnn_layer.bias,"(100,)",torch.float32,100,mpnn,mpnn
+mpnn.gnn_layer.edge_func.0.weight,"(75, 6)",torch.float32,450,mpnn,mpnn
+mpnn.gnn_layer.edge_func.0.bias,"(75,)",torch.float32,75,mpnn,mpnn
+mpnn.gnn_layer.edge_func.2.weight,"(10000, 75)",torch.float32,750000,mpnn,mpnn
+mpnn.gnn_layer.edge_func.2.bias,"(10000,)",torch.float32,10000,mpnn,mpnn
+mpnn.gru.weight_ih_l0,"(300, 100)",torch.float32,30000,mpnn,mpnn
+mpnn.gru.weight_hh_l0,"(300, 100)",torch.float32,30000,mpnn,mpnn
+mpnn.gru.bias_ih_l0,"(300,)",torch.float32,300,mpnn,mpnn
+mpnn.gru.bias_hh_l0,"(300,)",torch.float32,300,mpnn,mpnn
+project_edge_feats.0.weight,"(100, 6)",torch.float32,600,project_edge_feats,edge_projection
+project_edge_feats.0.bias,"(100,)",torch.float32,100,project_edge_feats,edge_projection
+readout_set2set.lstm.weight_ih_l0,"(800, 400)",torch.float32,320000,readout_set2set,set2set
+readout_set2set.lstm.weight_hh_l0,"(800, 200)",torch.float32,160000,readout_set2set,set2set
+readout_set2set.lstm.bias_ih_l0,"(800,)",torch.float32,800,readout_set2set,set2set
+readout_set2set.lstm.bias_hh_l0,"(800,)",torch.float32,800,readout_set2set,set2set
+readout_set2set.lstm.weight_ih_l1,"(800, 200)",torch.float32,160000,readout_set2set,set2set
+readout_set2set.lstm.weight_hh_l1,"(800, 200)",torch.float32,160000,readout_set2set,set2set
+readout_set2set.lstm.bias_ih_l1,"(800,)",torch.float32,800,readout_set2set,set2set
+readout_set2set.lstm.bias_hh_l1,"(800,)",torch.float32,800,readout_set2set,set2set
+ffn.linears.0.weight,"(392, 400)",torch.float32,156800,ffn,ffn
+ffn.linears.0.bias,"(392,)",torch.float32,392,ffn,ffn
+ffn.linears.1.weight,"(392, 392)",torch.float32,153664,ffn,ffn
+ffn.linears.1.bias,"(392,)",torch.float32,392,ffn,ffn
+ffn.linears.2.weight,"(256, 392)",torch.float32,100352,ffn,ffn
+ffn.linears.2.bias,"(256,)",torch.float32,256,ffn,ffn
+ffn.linears.3.weight,"(138, 256)",torch.float32,35328,ffn,ffn
+ffn.linears.3.bias,"(138,)",torch.float32,138,ffn,ffn
+ffn.batchnorms.0.weight,"(392,)",torch.float32,392,ffn,batchnorm
+ffn.batchnorms.0.bias,"(392,)",torch.float32,392,ffn,batchnorm
+ffn.batchnorms.0.running_mean,"(392,)",torch.float32,392,ffn,batchnorm
+ffn.batchnorms.0.running_var,"(392,)",torch.float32,392,ffn,batchnorm
+ffn.batchnorms.0.num_batches_tracked,(),torch.int64,1,ffn,batchnorm
+ffn.batchnorms.1.weight,"(392,)",torch.float32,392,ffn,batchnorm
+ffn.batchnorms.1.bias,"(392,)",torch.float32,392,ffn,batchnorm
+ffn.batchnorms.1.running_mean,"(392,)",torch.float32,392,ffn,batchnorm
+ffn.batchnorms.1.running_var,"(392,)",torch.float32,392,ffn,batchnorm
+ffn.batchnorms.1.num_batches_tracked,(),torch.int64,1,ffn,batchnorm
+ffn.batchnorms.2.weight,"(256,)",torch.float32,256,ffn,batchnorm
+ffn.batchnorms.2.bias,"(256,)",torch.float32,256,ffn,batchnorm
+ffn.batchnorms.2.running_mean,"(256,)",torch.float32,256,ffn,batchnorm
+ffn.batchnorms.2.running_var,"(256,)",torch.float32,256,ffn,batchnorm
+ffn.batchnorms.2.num_batches_tracked,(),torch.int64,1,ffn,batchnorm
