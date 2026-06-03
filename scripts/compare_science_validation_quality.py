@@ -32,6 +32,9 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 SRC_ROOT = REPO_ROOT / "src"
 if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
+SCRIPTS_ROOT = REPO_ROOT / "scripts"
+if str(SCRIPTS_ROOT) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS_ROOT))
 
 DEFAULT_DATA_DIR = REPO_ROOT / "tests/science.ade4401_data_s1_to_s7"
 DEFAULT_CHECKPOINT = REPO_ROOT / "checkpoints/openpom_experiments_1_checkpoint2.pt"
@@ -79,7 +82,31 @@ def parse_args() -> argparse.Namespace:
         "--checkpoint",
         type=Path,
         default=DEFAULT_CHECKPOINT,
-        help=f"Single checkpoint to evaluate. Default: {DEFAULT_CHECKPOINT}",
+        help=f"Checkpoint to evaluate. Default: {DEFAULT_CHECKPOINT}",
+    )
+    parser.add_argument(
+        "--model-kind",
+        choices=["openpom", "lm-head"],
+        default="openpom",
+        help="Inference implementation to evaluate. Default: openpom.",
+    )
+    parser.add_argument(
+        "--lm-model-path",
+        type=Path,
+        default=None,
+        help="Optional local pretrained LM path for --model-kind lm-head.",
+    )
+    parser.add_argument(
+        "--lm-batch-size",
+        type=int,
+        default=64,
+        help="LM encoder batch size for --model-kind lm-head. Default: 64.",
+    )
+    parser.add_argument(
+        "--lm-max-length",
+        type=int,
+        default=None,
+        help="Optional tokenizer max_length for --model-kind lm-head.",
     )
     parser.add_argument(
         "--json-report",
@@ -159,6 +186,27 @@ def build_label_mapping(science_labels: list[str]) -> list[dict[str, Any]]:
             }
         )
     return mapping
+
+
+def select_mapped_probabilities(
+    prediction: dict[str, Any],
+    label_mapping: list[dict[str, Any]],
+) -> np.ndarray:
+    probs = np.asarray(prediction["probs"], dtype=np.float64)
+    labels = [str(label) for label in prediction["labels"]]
+    label_to_index = {label: index for index, label in enumerate(labels)}
+    missing = [
+        str(item["openpom_label"])
+        for item in label_mapping
+        if str(item["openpom_label"]) not in label_to_index
+    ]
+    if missing:
+        raise KeyError(f"Predictions are missing mapped label(s): {missing}")
+    indices = [
+        label_to_index[str(item["openpom_label"])]
+        for item in label_mapping
+    ]
+    return probs[:, indices]
 
 
 def matrix_for_samples(
@@ -288,24 +336,78 @@ def top_k_metrics(left: np.ndarray, right: np.ndarray, k: int) -> TopKMetrics:
     )
 
 
+def predict_openpom_smiles(
+    *,
+    smiles: list[str],
+    checkpoint: Path,
+    top_k: int,
+    device: str,
+) -> dict[str, Any]:
+    from pom_repro.predict import predict_smiles
+
+    return predict_smiles(
+        smiles=smiles,
+        checkpoint_paths=[str(checkpoint)],
+        top_k=top_k,
+        device=device,
+        return_embedding=False,
+    )
+
+
+def predict_lm_head_smiles(
+    *,
+    checkpoint_path: Path,
+    model_path: Path | None,
+    smiles: list[str],
+    top_k: int,
+    batch_size: int,
+    device: str,
+    max_length: int | None,
+) -> dict[str, Any]:
+    from predict_lm_smiles import run as run_lm_prediction
+
+    return run_lm_prediction(
+        checkpoint_path=checkpoint_path,
+        model_path=model_path,
+        smiles=smiles,
+        top_k=top_k,
+        batch_size=batch_size,
+        device=device,
+        max_length=max_length,
+    )
+
+
 def predict_science_labels(
     smiles: list[str],
     checkpoint: Path,
     label_mapping: list[dict[str, Any]],
     device: str,
+    model_kind: str = "openpom",
+    lm_model_path: Path | None = None,
+    lm_batch_size: int = 64,
+    lm_max_length: int | None = None,
 ) -> np.ndarray:
-    from pom_repro.predict import predict_smiles
+    if model_kind == "openpom":
+        result = predict_openpom_smiles(
+            smiles=smiles,
+            checkpoint=checkpoint,
+            top_k=10,
+            device=device,
+        )
+    elif model_kind == "lm-head":
+        result = predict_lm_head_smiles(
+            checkpoint_path=checkpoint,
+            model_path=lm_model_path,
+            smiles=smiles,
+            top_k=10,
+            batch_size=lm_batch_size,
+            device=device,
+            max_length=lm_max_length,
+        )
+    else:
+        raise ValueError(f"Unsupported model_kind: {model_kind}")
 
-    result = predict_smiles(
-        smiles=smiles,
-        checkpoint_paths=[str(checkpoint)],
-        top_k=10,
-        device=device,
-        return_embedding=False,
-    )
-    probs = np.asarray(result["probs"], dtype=np.float64)
-    label_indices = [int(item["openpom_index"]) for item in label_mapping]
-    return probs[:, label_indices]
+    return select_mapped_probabilities(result, label_mapping)
 
 
 def nan_safe(value: Any) -> Any:
@@ -428,6 +530,12 @@ def fmt(value: float | None) -> str:
 
 
 def render_summary(report: dict[str, Any]) -> str:
+    model_kind = report["metadata"].get("model_kind", "openpom")
+    inference_name = (
+        "local frozen-LM-head inference"
+        if model_kind == "lm-head"
+        else "local OpenPOM-compatible single-checkpoint model"
+    )
     lines = [
         "# Science POM Validation Subset Quality Report",
         "",
@@ -441,7 +549,7 @@ def render_summary(report: dict[str, Any]) -> str:
         "Current model under test:",
         "",
         f"- checkpoint: `{report['metadata']['checkpoint']}`",
-        "- inference: local OpenPOM-compatible single-checkpoint model",
+        f"- inference: {inference_name}",
         "- label space compared: 55 Science validation descriptors mapped into the 138 OpenPOM labels",
         "",
         "## Dataset Counts",
@@ -479,9 +587,9 @@ def render_summary(report: dict[str, Any]) -> str:
         [
             "## Interpretation Notes",
             "",
-            "- `ours_vs_human` is the current OpenPOM single-checkpoint inference quality on the available supplement subset.",
+            f"- `ours_vs_human` is the current {inference_name} quality on the available supplement subset.",
             "- `paper_gnn_vs_human` is the paper-provided GNN prediction profile against the same human panel profiles, useful as a reference baseline.",
-            "- `ours_vs_paper_gnn` shows how similar our OpenPOM checkpoint behavior is to the paper-provided GNN prediction profiles on this subset.",
+            "- `ours_vs_paper_gnn` shows how similar our predictions are to the paper-provided GNN prediction profiles on this subset.",
             "- Differences can come from using OpenPOM rather than the original closed Science model, single checkpoint rather than ensemble, training set differences, label normalization, and the subset restriction to rows with SMILES.",
             "",
         ]
@@ -536,6 +644,10 @@ def main() -> int:
         checkpoint=checkpoint,
         label_mapping=label_mapping,
         device=args.device,
+        model_kind=args.model_kind,
+        lm_model_path=args.lm_model_path,
+        lm_batch_size=args.lm_batch_size,
+        lm_max_length=args.lm_max_length,
     )
     prediction_by_sample = {
         sample: all_predictions[index]
@@ -572,11 +684,28 @@ def main() -> int:
         per_sample_rows.extend(subset_sample_rows)
         per_label_rows.extend(subset_label_rows)
 
+    model_limitations = [
+        "Subset analysis only: not all Science validation samples have SMILES in Data S7.",
+        "Current evaluation is not a 10-model ensemble.",
+    ]
+    if args.model_kind == "openpom":
+        model_limitations.append(
+            "Current evaluation uses one OpenPOM checkpoint, not the paper's original closed model."
+        )
+    else:
+        model_limitations.append(
+            "Current evaluation uses the trained frozen-LM head, not the paper's original closed model."
+        )
+
     report = {
         "metadata": {
             "generated_at_utc": datetime.now(timezone.utc).isoformat(),
             "data_dir": str(data_dir),
             "checkpoint": str(checkpoint),
+            "model_kind": args.model_kind,
+            "lm_model_path": str(args.lm_model_path.resolve()) if args.lm_model_path is not None else None,
+            "lm_batch_size": args.lm_batch_size,
+            "lm_max_length": args.lm_max_length,
             "device": args.device,
             "counts": {
                 "data_s1_samples": len(s1_samples),
@@ -589,11 +718,7 @@ def main() -> int:
                 "mapped_labels": len(label_mapping),
             },
             "label_mapping": label_mapping,
-            "limitations": [
-                "Subset analysis only: not all Science validation samples have SMILES in Data S7.",
-                "Current evaluation uses one OpenPOM checkpoint, not the paper's original closed model.",
-                "Current evaluation is not a 10-model ensemble because only one real checkpoint is present locally.",
-            ],
+            "limitations": model_limitations,
         },
         "subsets": subsets,
     }

@@ -5,6 +5,7 @@ import importlib.util
 import sys
 from pathlib import Path
 
+import numpy as np
 import pytest
 
 
@@ -89,3 +90,65 @@ def test_science_validation_metric_helpers() -> None:
     assert metrics.pearson == pytest.approx(0.8)
     assert metrics.spearman == pytest.approx(0.8)
     assert metrics.mae == pytest.approx(0.5)
+
+
+def test_select_mapped_probabilities_uses_prediction_label_names() -> None:
+    module = load_science_validation_module()
+    prediction = {
+        "labels": ["woody", "floral", "green"],
+        "probs": np.asarray(
+            [
+                [0.1, 0.9, 0.3],
+                [0.2, 0.8, 0.4],
+            ],
+            dtype=np.float64,
+        ),
+    }
+    label_mapping = [
+        {"science_label": "Floral", "openpom_label": "floral", "openpom_index": 52},
+        {"science_label": "Woody", "openpom_label": "woody", "openpom_index": 137},
+    ]
+
+    mapped = module.select_mapped_probabilities(prediction, label_mapping)
+
+    np.testing.assert_allclose(mapped, [[0.9, 0.1], [0.8, 0.2]])
+
+
+def test_predict_science_labels_can_use_lm_head_predictor(monkeypatch) -> None:
+    module = load_science_validation_module()
+    calls: dict[str, object] = {}
+
+    def fake_lm_predictor(**kwargs: object) -> dict[str, object]:
+        calls.update(kwargs)
+        return {
+            "labels": ["woody", "floral", "green"],
+            "probs": np.asarray([[0.1, 0.9, 0.3]], dtype=np.float64),
+        }
+
+    monkeypatch.setattr(module, "predict_lm_head_smiles", fake_lm_predictor)
+    label_mapping = [
+        {"science_label": "Floral", "openpom_label": "floral", "openpom_index": 52},
+        {"science_label": "Woody", "openpom_label": "woody", "openpom_index": 137},
+    ]
+
+    mapped = module.predict_science_labels(
+        smiles=["CCO"],
+        checkpoint=Path("outputs/molformer_head/head.pt"),
+        label_mapping=label_mapping,
+        device="cpu",
+        model_kind="lm-head",
+        lm_model_path=Path("models/MoLFormer-XL-both-10pct"),
+        lm_batch_size=8,
+        lm_max_length=64,
+    )
+
+    np.testing.assert_allclose(mapped, [[0.9, 0.1]])
+    assert calls == {
+        "checkpoint_path": Path("outputs/molformer_head/head.pt"),
+        "model_path": Path("models/MoLFormer-XL-both-10pct"),
+        "smiles": ["CCO"],
+        "top_k": 10,
+        "batch_size": 8,
+        "device": "cpu",
+        "max_length": 64,
+    }
