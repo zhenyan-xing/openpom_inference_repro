@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import inspect
 import json
 import sys
 from pathlib import Path
@@ -199,6 +200,8 @@ def export_runtime_embeddings(
 
 def load_head_checkpoint(path: Path, torch_module: Any) -> dict[str, Any]:
     kwargs: dict[str, Any] = {"map_location": "cpu"}
+    if "weights_only" in inspect.signature(torch_module.load).parameters:
+        kwargs["weights_only"] = False
     checkpoint = torch_module.load(path, **kwargs)
     required = {
         "state_dict",
