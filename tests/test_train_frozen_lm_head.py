@@ -85,12 +85,15 @@ def test_train_parser_accepts_server_command_metadata() -> None:
             "ibm-research/MoLFormer-XL-both-10pct",
             "--output-dir",
             "outputs/molformer_head",
+            "--final-epochs",
+            "2",
         ]
     )
 
     assert args.data == Path("data/openpom/curated_GS_LF_merged_4983.csv")
     assert args.model_id == "ibm-research/MoLFormer-XL-both-10pct"
     assert args.output_dir == Path("outputs/molformer_head")
+    assert args.final_epochs == 2
 
 
 def test_predict_parser_accepts_explicit_config_contract() -> None:
@@ -110,6 +113,40 @@ def test_predict_parser_accepts_explicit_config_contract() -> None:
     assert args.checkpoint == Path("outputs/molformer_head/head.pt")
     assert args.config == Path("outputs/molformer_head/config.json")
     assert args.smiles == ["CCO"]
+
+
+def test_predict_checkpoint_loader_disables_weights_only_when_supported(tmp_path) -> None:
+    module = load_predict_module()
+    calls: dict[str, object] = {}
+
+    class FakeTorch:
+        @staticmethod
+        def load(
+            path: Path,
+            *,
+            map_location: str,
+            weights_only: bool,
+        ) -> dict[str, object]:
+            calls["path"] = path
+            calls["map_location"] = map_location
+            calls["weights_only"] = weights_only
+            return {
+                "state_dict": {},
+                "input_dim": 4,
+                "hidden_dim": 8,
+                "output_dim": 3,
+                "dropout": 0.1,
+                "feature_mean": [],
+                "feature_std": [],
+                "label_names": [],
+                "config": {},
+            }
+
+    checkpoint = module.load_head_checkpoint(tmp_path / "head.pt", FakeTorch)
+
+    assert checkpoint["input_dim"] == 4
+    assert calls["map_location"] == "cpu"
+    assert calls["weights_only"] is False
 
 
 def test_greedy_multilabel_kfold_covers_each_sample_once() -> None:
@@ -159,10 +196,12 @@ def test_run_trains_final_head_and_writes_bundle(tmp_path, monkeypatch) -> None:
         patience=0,
         skip_cv=True,
         command="python scripts/train_frozen_lm_head.py --test",
+        final_epochs=1,
     )
 
     assert exit_code == 0
     assert (output_dir / "head.pt").exists()
+    assert (output_dir / "training_history.csv").exists()
     assert json.loads((output_dir / "label_names.json").read_text()) == [
         "floral",
         "woody",
@@ -173,8 +212,51 @@ def test_run_trains_final_head_and_writes_bundle(tmp_path, monkeypatch) -> None:
     assert config["input_dim"] == 4
     assert config["output_dim"] == 3
     assert config["hidden_dim"] == 8
+    assert config["final_epochs"] == 1
     assert config["skip_cv"] is True
 
     metrics = json.loads((output_dir / "metrics.json").read_text())
     assert "final_train" in metrics
     assert "macro_average_precision" in metrics["final_train"]
+    assert len(metrics["final_train"]["history"]) == 1
+
+
+def test_run_writes_cv_epoch_history(tmp_path, monkeypatch) -> None:
+    pytest.importorskip("torch")
+    pytest.importorskip("sklearn")
+    module = load_train_module()
+
+    embeddings_path = tmp_path / "embeddings.npz"
+    output_dir = tmp_path / "head"
+    write_embedding_npz(embeddings_path)
+    monkeypatch.setattr(module, "detect_git_commit", lambda: "abc123")
+
+    exit_code = module.run(
+        embeddings_path=embeddings_path,
+        output_dir=output_dir,
+        epochs=2,
+        batch_size=2,
+        lr=1e-3,
+        weight_decay=0.0,
+        dropout=0.1,
+        hidden_dim=8,
+        folds=2,
+        seed=1,
+        device="cpu",
+        pos_weight_max=10.0,
+        patience=0,
+        skip_cv=False,
+        command="python scripts/train_frozen_lm_head.py --test",
+    )
+
+    assert exit_code == 0
+    metrics = json.loads((output_dir / "metrics.json").read_text())
+    fold = metrics["cv"]["folds"][0]
+    assert len(fold["history"]) == 2
+    assert fold["history"][0]["epoch"] == 1
+    assert fold["history"][1]["epoch"] == 2
+    assert isinstance(fold["history"][0]["train_loss"], float)
+    assert isinstance(fold["history"][0]["val_loss"], float)
+    history_csv = (output_dir / "training_history.csv").read_text(encoding="utf-8")
+    assert "phase,fold,epoch,train_loss,val_loss,best_epoch" in history_csv
+    assert "cv,1,1," in history_csv

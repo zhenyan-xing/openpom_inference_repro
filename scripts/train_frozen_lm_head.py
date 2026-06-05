@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import math
 import random
@@ -35,6 +36,7 @@ class FoldResult:
     best_epoch: int
     best_val_loss: float
     final_train_loss: float
+    history: list[dict[str, float | int]]
     metrics: dict[str, Any]
 
 
@@ -82,6 +84,15 @@ def build_parser() -> argparse.ArgumentParser:
         type=int,
         default=80,
         help="Training epochs for each CV fold and final head. Default: 80.",
+    )
+    parser.add_argument(
+        "--final-epochs",
+        type=int,
+        default=None,
+        help=(
+            "Optional epoch count for the final full-data head. "
+            "Default: reuse --epochs."
+        ),
     )
     parser.add_argument(
         "--batch-size",
@@ -648,6 +659,7 @@ def run_cv(
                 best_epoch=int(train_report["best_epoch"]),
                 best_val_loss=float(train_report["best_val_loss"]),
                 final_train_loss=float(train_report["final_train_loss"]),
+                history=list(train_report["history"]),
                 metrics=metrics,
             )
         )
@@ -712,6 +724,42 @@ def write_json(path: Path, value: Any) -> None:
     )
 
 
+def write_training_history_csv(path: Path, metrics: dict[str, Any]) -> None:
+    rows: list[dict[str, Any]] = []
+    for fold in metrics.get("cv", {}).get("folds", []):
+        for item in fold.get("history", []):
+            rows.append(
+                {
+                    "phase": "cv",
+                    "fold": fold.get("fold"),
+                    "epoch": item.get("epoch"),
+                    "train_loss": item.get("train_loss"),
+                    "val_loss": item.get("val_loss"),
+                    "best_epoch": fold.get("best_epoch"),
+                }
+            )
+
+    final_train = metrics.get("final_train", {})
+    for item in final_train.get("history", []):
+        rows.append(
+            {
+                "phase": "final_train",
+                "fold": "",
+                "epoch": item.get("epoch"),
+                "train_loss": item.get("train_loss"),
+                "val_loss": item.get("val_loss"),
+                "best_epoch": final_train.get("best_epoch"),
+            }
+        )
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", newline="", encoding="utf-8") as handle:
+        fieldnames = ["phase", "fold", "epoch", "train_loss", "val_loss", "best_epoch"]
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+
+
 def save_final_bundle(
     *,
     output_dir: Path,
@@ -742,6 +790,7 @@ def save_final_bundle(
     write_json(output_dir / "config.json", config)
     write_json(output_dir / "label_names.json", label_names)
     write_json(output_dir / "metrics.json", metrics)
+    write_training_history_csv(output_dir / "training_history.csv", metrics)
 
 
 def run(
@@ -764,6 +813,7 @@ def run(
     data_path: str | Path | None = None,
     model_id: str | None = None,
     model_path: str | Path | None = None,
+    final_epochs: int | None = None,
 ) -> int:
     import torch
 
@@ -775,9 +825,12 @@ def run(
         raise ValueError("weight_decay cannot be negative.")
     if patience < 0:
         raise ValueError("patience cannot be negative.")
+    if final_epochs is not None and final_epochs <= 0:
+        raise ValueError("final_epochs must be positive.")
 
     set_seed(seed)
     resolved_device = resolve_device(device, torch)
+    resolved_final_epochs = int(final_epochs) if final_epochs is not None else int(epochs)
     embeddings_path = resolve_path(embeddings_path)
     output_dir = resolve_path(output_dir)
     resolved_data_path = resolve_path(data_path) if data_path is not None else None
@@ -811,7 +864,7 @@ def run(
         val_labels=None,
         hidden_dim=hidden_dim,
         dropout=dropout,
-        epochs=epochs,
+        epochs=resolved_final_epochs,
         batch_size=batch_size,
         lr=lr,
         weight_decay=weight_decay,
@@ -828,6 +881,7 @@ def run(
     final_metrics = safe_metric_summary(labels, sigmoid_numpy(final_logits))
     final_metrics["train_loss"] = final_report["final_train_loss"]
     final_metrics["best_epoch"] = final_report["best_epoch"]
+    final_metrics["history"] = final_report["history"]
 
     config = {
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
@@ -847,6 +901,7 @@ def run(
         "hidden_dim": int(hidden_dim),
         "dropout": float(dropout),
         "epochs": int(epochs),
+        "final_epochs": int(resolved_final_epochs),
         "batch_size": int(batch_size),
         "lr": float(lr),
         "weight_decay": float(weight_decay),
@@ -915,6 +970,7 @@ def main() -> int:
         data_path=args.data,
         model_id=args.model_id,
         model_path=args.model_path,
+        final_epochs=args.final_epochs,
     )
 
 
