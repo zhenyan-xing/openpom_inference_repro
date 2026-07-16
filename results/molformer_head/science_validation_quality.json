@@ -1,0 +1,816 @@
+{
+  "metadata": {
+    "checkpoint": "/workspace/hedongchen/xing_work/data/pom/outputs/molformer_head/head.pt",
+    "counts": {
+      "all_overlap_samples": 207,
+      "clean_overlap_samples": 163,
+      "data_s1_samples": 400,
+      "data_s4_samples": 397,
+      "data_s5_samples": 397,
+      "data_s7_smiles_samples": 209,
+      "mapped_labels": 55,
+      "science_labels": 55
+    },
+    "data_dir": "/workspace/hedongchen/xing_work/data/pom/openpom_inference_repro/tests/science.ade4401_data_s1_to_s7",
+    "device": "cuda",
+    "generated_at_utc": "2026-06-05T08:53:10.683373+00:00",
+    "label_mapping": [
+      {
+        "openpom_index": 60,
+        "openpom_label": "green",
+        "science_label": "Green"
+      },
+      {
+        "openpom_index": 59,
+        "openpom_label": "grassy",
+        "science_label": "Grassy"
+      },
+      {
+        "openpom_index": 42,
+        "openpom_label": "cucumber",
+        "science_label": "Cucumber"
+      },
+      {
+        "openpom_index": 127,
+        "openpom_label": "tomato",
+        "science_label": "Tomato"
+      },
+      {
+        "openpom_index": 62,
+        "openpom_label": "hay",
+        "science_label": "Hay"
+      },
+      {
+        "openpom_index": 64,
+        "openpom_label": "herbal",
+        "science_label": "Herbal"
+      },
+      {
+        "openpom_index": 82,
+        "openpom_label": "mint",
+        "science_label": "Mint"
+      },
+      {
+        "openpom_index": 137,
+        "openpom_label": "woody",
+        "science_label": "Woody"
+      },
+      {
+        "openpom_index": 99,
+        "openpom_label": "pine",
+        "science_label": "Pine"
+      },
+      {
+        "openpom_index": 50,
+        "openpom_label": "floral",
+        "science_label": "Floral"
+      },
+      {
+        "openpom_index": 67,
+        "openpom_label": "jasmin",
+        "science_label": "Jasmine"
+      },
+      {
+        "openpom_index": 110,
+        "openpom_label": "rose",
+        "science_label": "Rose"
+      },
+      {
+        "openpom_index": 65,
+        "openpom_label": "honey",
+        "science_label": "Honey"
+      },
+      {
+        "openpom_index": 53,
+        "openpom_label": "fruity",
+        "science_label": "Fruity"
+      },
+      {
+        "openpom_index": 30,
+        "openpom_label": "citrus",
+        "science_label": "Citrus"
+      },
+      {
+        "openpom_index": 74,
+        "openpom_label": "lemon",
+        "science_label": "Lemon"
+      },
+      {
+        "openpom_index": 92,
+        "openpom_label": "orange",
+        "science_label": "Orange"
+      },
+      {
+        "openpom_index": 128,
+        "openpom_label": "tropical",
+        "science_label": "Tropical"
+      },
+      {
+        "openpom_index": 14,
+        "openpom_label": "berry",
+        "science_label": "Berry"
+      },
+      {
+        "openpom_index": 96,
+        "openpom_label": "peach",
+        "science_label": "Peach"
+      },
+      {
+        "openpom_index": 7,
+        "openpom_label": "apple",
+        "science_label": "Apple"
+      },
+      {
+        "openpom_index": 118,
+        "openpom_label": "sour",
+        "science_label": "Sour"
+      },
+      {
+        "openpom_index": 48,
+        "openpom_label": "fermented",
+        "science_label": "Fermented"
+      },
+      {
+        "openpom_index": 0,
+        "openpom_label": "alcoholic",
+        "science_label": "Alcoholic"
+      },
+      {
+        "openpom_index": 136,
+        "openpom_label": "winey",
+        "science_label": "Winey"
+      },
+      {
+        "openpom_index": 111,
+        "openpom_label": "rummy",
+        "science_label": "Rummy"
+      },
+      {
+        "openpom_index": 22,
+        "openpom_label": "caramellic",
+        "science_label": "Caramellic"
+      },
+      {
+        "openpom_index": 129,
+        "openpom_label": "vanilla",
+        "science_label": "Vanilla"
+      },
+      {
+        "openpom_index": 119,
+        "openpom_label": "spicy",
+        "science_label": "Spicy"
+      },
+      {
+        "openpom_index": 35,
+        "openpom_label": "coffee",
+        "science_label": "Coffee"
+      },
+      {
+        "openpom_index": 115,
+        "openpom_label": "smoky",
+        "science_label": "Smoky"
+      },
+      {
+        "openpom_index": 109,
+        "openpom_label": "roasted",
+        "science_label": "Roasted"
+      },
+      {
+        "openpom_index": 77,
+        "openpom_label": "meaty",
+        "science_label": "Meaty"
+      },
+      {
+        "openpom_index": 88,
+        "openpom_label": "nutty",
+        "science_label": "Nutty"
+      },
+      {
+        "openpom_index": 47,
+        "openpom_label": "fatty",
+        "science_label": "Fatty"
+      },
+      {
+        "openpom_index": 34,
+        "openpom_label": "coconut",
+        "science_label": "Coconut"
+      },
+      {
+        "openpom_index": 134,
+        "openpom_label": "waxy",
+        "science_label": "Waxy"
+      },
+      {
+        "openpom_index": 43,
+        "openpom_label": "dairy",
+        "science_label": "Dairy"
+      },
+      {
+        "openpom_index": 19,
+        "openpom_label": "buttery",
+        "science_label": "Buttery"
+      },
+      {
+        "openpom_index": 26,
+        "openpom_label": "cheesy",
+        "science_label": "Cheesy"
+      },
+      {
+        "openpom_index": 121,
+        "openpom_label": "sulfurous",
+        "science_label": "Sulfurous"
+      },
+      {
+        "openpom_index": 54,
+        "openpom_label": "garlic",
+        "science_label": "Garlic"
+      },
+      {
+        "openpom_index": 45,
+        "openpom_label": "earthy",
+        "science_label": "Earthy"
+      },
+      {
+        "openpom_index": 86,
+        "openpom_label": "musty",
+        "science_label": "Musty"
+      },
+      {
+        "openpom_index": 5,
+        "openpom_label": "animal",
+        "science_label": "Animal"
+      },
+      {
+        "openpom_index": 85,
+        "openpom_label": "musk",
+        "science_label": "Musk"
+      },
+      {
+        "openpom_index": 104,
+        "openpom_label": "powdery",
+        "science_label": "Powdery"
+      },
+      {
+        "openpom_index": 123,
+        "openpom_label": "sweet",
+        "science_label": "Sweet"
+      },
+      {
+        "openpom_index": 38,
+        "openpom_label": "cooling",
+        "science_label": "Cooling"
+      },
+      {
+        "openpom_index": 114,
+        "openpom_label": "sharp",
+        "science_label": "Sharp"
+      },
+      {
+        "openpom_index": 78,
+        "openpom_label": "medicinal",
+        "science_label": "Medicinal"
+      },
+      {
+        "openpom_index": 21,
+        "openpom_label": "camphoreous",
+        "science_label": "Camphoreous"
+      },
+      {
+        "openpom_index": 80,
+        "openpom_label": "metallic",
+        "science_label": "Metallic"
+      },
+      {
+        "openpom_index": 95,
+        "openpom_label": "ozone",
+        "science_label": "Ozone"
+      },
+      {
+        "openpom_index": 49,
+        "openpom_label": "fishy",
+        "science_label": "Fishy"
+      }
+    ],
+    "limitations": [
+      "Subset analysis only: not all Science validation samples have SMILES in Data S7.",
+      "Current evaluation is not a 10-model ensemble.",
+      "Current evaluation uses the trained frozen-LM head, not the paper's original closed model."
+    ],
+    "lm_batch_size": 64,
+    "lm_max_length": null,
+    "lm_model_path": "/workspace/hedongchen/xing_work/data/pom/models/MoLFormer-XL-both-10pct",
+    "model_kind": "lm-head"
+  },
+  "subsets": {
+    "all_overlap": {
+      "global": {
+        "ours_vs_human": {
+          "cosine": 0.5397260518668509,
+          "mae": 0.0636151787328233,
+          "pearson": 0.48450454566835144,
+          "rmse": 0.15294282449484164,
+          "spearman": 0.6263927052238811
+        },
+        "ours_vs_paper_gnn": {
+          "cosine": 0.5741209082396451,
+          "mae": 0.07419786886262297,
+          "pearson": 0.5250985881122756,
+          "rmse": 0.16064649995892008,
+          "spearman": 0.645429414594612
+        },
+        "paper_gnn_vs_human": {
+          "cosine": 0.6961606999457823,
+          "mae": 0.05892583630823812,
+          "pearson": 0.5974525664077589,
+          "rmse": 0.12165048759669482,
+          "spearman": 0.6231014942927825
+        }
+      },
+      "num_labels": 55,
+      "num_samples": 207,
+      "per_label_summary": {
+        "ours_vs_human": {
+          "cosine": {
+            "count": 55,
+            "max": 0.8157940023141703,
+            "mean": 0.3790913626700836,
+            "median": 0.38820807379322486,
+            "min": 0.01122097468279442,
+            "q1": 0.19455760587898444,
+            "q3": 0.5492904329588368
+          },
+          "pearson": {
+            "count": 55,
+            "max": 0.7963224507735843,
+            "mean": 0.30762407858686597,
+            "median": 0.2810584473804949,
+            "min": -0.06735056985417918,
+            "q1": 0.12803677941824756,
+            "q3": 0.4670676716357933
+          },
+          "spearman": {
+            "count": 55,
+            "max": 0.6485710188221797,
+            "mean": 0.31958299314947136,
+            "median": 0.29479739857427967,
+            "min": -0.04209790378096516,
+            "q1": 0.24549836207882741,
+            "q3": 0.40828523846614595
+          }
+        },
+        "ours_vs_paper_gnn": {
+          "cosine": {
+            "count": 55,
+            "max": 0.790755454803743,
+            "mean": 0.449847210291149,
+            "median": 0.49427752831109684,
+            "min": 0.005892628480904978,
+            "q1": 0.28935167158893726,
+            "q3": 0.6137280610262265
+          },
+          "pearson": {
+            "count": 55,
+            "max": 0.7794902458375307,
+            "mean": 0.3885337329138049,
+            "median": 0.44151380017593506,
+            "min": -0.018815353864305804,
+            "q1": 0.21798418255514634,
+            "q3": 0.5288411064433116
+          },
+          "spearman": {
+            "count": 55,
+            "max": 0.718553484646773,
+            "mean": 0.4277554485525495,
+            "median": 0.42399151432498844,
+            "min": 0.09351966100594215,
+            "q1": 0.3531255750018942,
+            "q3": 0.5320451937959325
+          }
+        },
+        "paper_gnn_vs_human": {
+          "cosine": {
+            "count": 55,
+            "max": 0.9075654622721754,
+            "mean": 0.6501757814902563,
+            "median": 0.6747620731929552,
+            "min": 0.16557109448073182,
+            "q1": 0.5599597220340775,
+            "q3": 0.7481627394347016
+          },
+          "pearson": {
+            "count": 55,
+            "max": 0.733539345256866,
+            "mean": 0.5139751554826727,
+            "median": 0.5278269419530957,
+            "min": 0.06378499443313397,
+            "q1": 0.4178918473993922,
+            "q3": 0.6263883189248962
+          },
+          "spearman": {
+            "count": 55,
+            "max": 0.7199294817883308,
+            "mean": 0.43933148233166014,
+            "median": 0.4532000576661156,
+            "min": 0.06639686485614064,
+            "q1": 0.35483693118380644,
+            "q3": 0.5351367378193079
+          }
+        }
+      },
+      "per_sample_summary": {
+        "ours_vs_human": {
+          "cosine": {
+            "count": 207,
+            "max": 0.9387064428235409,
+            "mean": 0.542347176750247,
+            "median": 0.5583242672696426,
+            "min": 0.07690547840749766,
+            "q1": 0.41519639495159677,
+            "q3": 0.6733500431553339
+          },
+          "pearson": {
+            "count": 207,
+            "max": 0.9517548539233228,
+            "mean": 0.4866448847586388,
+            "median": 0.5030321736148015,
+            "min": -0.026389521108198328,
+            "q1": 0.3514904541699273,
+            "q3": 0.6418818400961734
+          },
+          "spearman": {
+            "count": 207,
+            "max": 0.8526074655773023,
+            "mean": 0.666711191475617,
+            "median": 0.6746031746031746,
+            "min": 0.3694805194805195,
+            "q1": 0.6075271270267758,
+            "q3": 0.7209217667647204
+          }
+        },
+        "ours_vs_paper_gnn": {
+          "cosine": {
+            "count": 207,
+            "max": 0.9552716579893001,
+            "mean": 0.5464604419348144,
+            "median": 0.5609656517813539,
+            "min": 0.0636968271213638,
+            "q1": 0.37975874063518505,
+            "q3": 0.7160674239045635
+          },
+          "pearson": {
+            "count": 207,
+            "max": 0.9538102781802732,
+            "mean": 0.48856229183558864,
+            "median": 0.5106207643494687,
+            "min": -0.04361857028031746,
+            "q1": 0.2919495780100954,
+            "q3": 0.6919017439983763
+          },
+          "spearman": {
+            "count": 207,
+            "max": 0.8699134199134201,
+            "mean": 0.6776872908422389,
+            "median": 0.690981240981241,
+            "min": 0.356926406926407,
+            "q1": 0.6215367965367966,
+            "q3": 0.7554834054834056
+          }
+        },
+        "paper_gnn_vs_human": {
+          "cosine": {
+            "count": 207,
+            "max": 0.9350747309480438,
+            "mean": 0.7027892096059765,
+            "median": 0.7220709091916905,
+            "min": 0.30654196729727107,
+            "q1": 0.6143846408280484,
+            "q3": 0.8058820185138826
+          },
+          "pearson": {
+            "count": 207,
+            "max": 0.9199359022941531,
+            "mean": 0.595787700657154,
+            "median": 0.6066305564622909,
+            "min": 0.09074681651380338,
+            "q1": 0.47383545390494747,
+            "q3": 0.737891372946433
+          },
+          "spearman": {
+            "count": 207,
+            "max": 0.8751803751803753,
+            "mean": 0.6417725743432526,
+            "median": 0.6585255867879866,
+            "min": 0.140981240981241,
+            "q1": 0.5802954599692209,
+            "q3": 0.7240144538113239
+          }
+        }
+      },
+      "top_k": {
+        "ours_vs_human": {
+          "top10": {
+            "exact_order_match_fraction": 0.0,
+            "k": 10,
+            "mean_overlap_count": 6.130434782608695,
+            "mean_overlap_fraction": 0.6130434782608696,
+            "median_overlap_count": 6.0
+          },
+          "top5": {
+            "exact_order_match_fraction": 0.0,
+            "k": 5,
+            "mean_overlap_count": 2.5652173913043477,
+            "mean_overlap_fraction": 0.5130434782608695,
+            "median_overlap_count": 3.0
+          }
+        },
+        "ours_vs_paper_gnn": {
+          "top10": {
+            "exact_order_match_fraction": 0.0,
+            "k": 10,
+            "mean_overlap_count": 5.6231884057971016,
+            "mean_overlap_fraction": 0.5623188405797102,
+            "median_overlap_count": 6.0
+          },
+          "top5": {
+            "exact_order_match_fraction": 0.0,
+            "k": 5,
+            "mean_overlap_count": 2.236714975845411,
+            "mean_overlap_fraction": 0.44734299516908216,
+            "median_overlap_count": 2.0
+          }
+        },
+        "paper_gnn_vs_human": {
+          "top10": {
+            "exact_order_match_fraction": 0.0,
+            "k": 10,
+            "mean_overlap_count": 5.690821256038648,
+            "mean_overlap_fraction": 0.5690821256038647,
+            "median_overlap_count": 6.0
+          },
+          "top5": {
+            "exact_order_match_fraction": 0.0,
+            "k": 5,
+            "mean_overlap_count": 2.241545893719807,
+            "mean_overlap_fraction": 0.44830917874396137,
+            "median_overlap_count": 2.0
+          }
+        }
+      }
+    },
+    "clean_overlap": {
+      "global": {
+        "ours_vs_human": {
+          "cosine": 0.546544222481384,
+          "mae": 0.06378449578547514,
+          "pearson": 0.49042371649634287,
+          "rmse": 0.15328911505606485,
+          "spearman": 0.6238624014918953
+        },
+        "ours_vs_paper_gnn": {
+          "cosine": 0.5780605550068451,
+          "mae": 0.07479976610475973,
+          "pearson": 0.5278431662690823,
+          "rmse": 0.16085481761052461,
+          "spearman": 0.6412563579657562
+        },
+        "paper_gnn_vs_human": {
+          "cosine": 0.6996137204358835,
+          "mae": 0.0592810202285252,
+          "pearson": 0.6008812917193055,
+          "rmse": 0.12179817365795056,
+          "spearman": 0.6252685044394111
+        }
+      },
+      "num_labels": 55,
+      "num_samples": 163,
+      "per_label_summary": {
+        "ours_vs_human": {
+          "cosine": {
+            "count": 55,
+            "max": 0.875732633630458,
+            "mean": 0.39212555456024323,
+            "median": 0.40543787838989087,
+            "min": 0.013928022937709027,
+            "q1": 0.20832724621105125,
+            "q3": 0.5568414266407268
+          },
+          "pearson": {
+            "count": 55,
+            "max": 0.9099604199336879,
+            "mean": 0.3173723460472553,
+            "median": 0.33673895060012726,
+            "min": -0.0625874112570449,
+            "q1": 0.12337201387844941,
+            "q3": 0.47917520339636444
+          },
+          "spearman": {
+            "count": 55,
+            "max": 0.6666472697446811,
+            "mean": 0.3143071709011361,
+            "median": 0.286690766159475,
+            "min": -0.0972621905173228,
+            "q1": 0.22231505368539442,
+            "q3": 0.4050819939324797
+          }
+        },
+        "ours_vs_paper_gnn": {
+          "cosine": {
+            "count": 55,
+            "max": 0.8049935971465177,
+            "mean": 0.45930475313739433,
+            "median": 0.489466509386456,
+            "min": 0.005460070991205605,
+            "q1": 0.3269937544401227,
+            "q3": 0.6312622304943436
+          },
+          "pearson": {
+            "count": 55,
+            "max": 0.7899440199761426,
+            "mean": 0.39704383577926444,
+            "median": 0.44528399251786976,
+            "min": -0.01841914710129117,
+            "q1": 0.2687633551797076,
+            "q3": 0.5426708121705677
+          },
+          "spearman": {
+            "count": 55,
+            "max": 0.7016808818394933,
+            "mean": 0.4233833169341174,
+            "median": 0.4095881756363576,
+            "min": 0.07051612438414773,
+            "q1": 0.35375829218414884,
+            "q3": 0.529342000986472
+          }
+        },
+        "paper_gnn_vs_human": {
+          "cosine": {
+            "count": 55,
+            "max": 0.9157429525103906,
+            "mean": 0.6556147680588359,
+            "median": 0.6757223675404684,
+            "min": 0.12643756404085488,
+            "q1": 0.56030881912313,
+            "q3": 0.7622932936357674
+          },
+          "pearson": {
+            "count": 55,
+            "max": 0.7488030395010404,
+            "mean": 0.5187877923269401,
+            "median": 0.5199583388875655,
+            "min": 0.015475905314051155,
+            "q1": 0.4143883428571127,
+            "q3": 0.6360343714610195
+          },
+          "spearman": {
+            "count": 55,
+            "max": 0.711844868959937,
+            "mean": 0.4425296473939867,
+            "median": 0.46832759738640334,
+            "min": 0.005150860834920047,
+            "q1": 0.349579427085654,
+            "q3": 0.5481098146061225
+          }
+        }
+      },
+      "per_sample_summary": {
+        "ours_vs_human": {
+          "cosine": {
+            "count": 163,
+            "max": 0.8566357068438402,
+            "mean": 0.5494667741486395,
+            "median": 0.5816673705864968,
+            "min": 0.09847540295978949,
+            "q1": 0.425816348392708,
+            "q3": 0.6925503811363553
+          },
+          "pearson": {
+            "count": 163,
+            "max": 0.8259138120599734,
+            "mean": 0.4938324051997786,
+            "median": 0.5164849780665616,
+            "min": -0.026389521108198328,
+            "q1": 0.3574647180400476,
+            "q3": 0.6535337308102981
+          },
+          "spearman": {
+            "count": 163,
+            "max": 0.8526074655773023,
+            "mean": 0.6679776350683908,
+            "median": 0.6746874944729334,
+            "min": 0.48917132039071864,
+            "q1": 0.6116883116883118,
+            "q3": 0.7190800563786215
+          }
+        },
+        "ours_vs_paper_gnn": {
+          "cosine": {
+            "count": 163,
+            "max": 0.9552716579893001,
+            "mean": 0.5571561680090195,
+            "median": 0.5868571121517732,
+            "min": 0.07992408812965748,
+            "q1": 0.4011595275915577,
+            "q3": 0.7160674239045635
+          },
+          "pearson": {
+            "count": 163,
+            "max": 0.9538102781802732,
+            "mean": 0.4992760413797961,
+            "median": 0.5262903615855915,
+            "min": -0.04361857028031746,
+            "q1": 0.33677528793530787,
+            "q3": 0.6810301359478601
+          },
+          "spearman": {
+            "count": 163,
+            "max": 0.8598124098124099,
+            "mean": 0.6773164067945244,
+            "median": 0.6904761904761906,
+            "min": 0.356926406926407,
+            "q1": 0.6238095238095238,
+            "q3": 0.7521645021645023
+          }
+        },
+        "paper_gnn_vs_human": {
+          "cosine": {
+            "count": 163,
+            "max": 0.9350747309480438,
+            "mean": 0.7047586472672688,
+            "median": 0.7195434472210066,
+            "min": 0.37742138840584744,
+            "q1": 0.61638088035182,
+            "q3": 0.798994443718215
+          },
+          "pearson": {
+            "count": 163,
+            "max": 0.9197693571087262,
+            "mean": 0.5968205372739331,
+            "median": 0.6052371978903512,
+            "min": 0.1718244027336451,
+            "q1": 0.4771633719662436,
+            "q3": 0.7362533236703098
+          },
+          "spearman": {
+            "count": 163,
+            "max": 0.8751803751803753,
+            "mean": 0.6454763900644278,
+            "median": 0.6586070439694116,
+            "min": 0.140981240981241,
+            "q1": 0.5836434400220909,
+            "q3": 0.7240144538113239
+          }
+        }
+      },
+      "top_k": {
+        "ours_vs_human": {
+          "top10": {
+            "exact_order_match_fraction": 0.0,
+            "k": 10,
+            "mean_overlap_count": 6.116564417177914,
+            "mean_overlap_fraction": 0.6116564417177914,
+            "median_overlap_count": 6.0
+          },
+          "top5": {
+            "exact_order_match_fraction": 0.0,
+            "k": 5,
+            "mean_overlap_count": 2.5828220858895707,
+            "mean_overlap_fraction": 0.5165644171779141,
+            "median_overlap_count": 3.0
+          }
+        },
+        "ours_vs_paper_gnn": {
+          "top10": {
+            "exact_order_match_fraction": 0.0,
+            "k": 10,
+            "mean_overlap_count": 5.588957055214724,
+            "mean_overlap_fraction": 0.5588957055214724,
+            "median_overlap_count": 6.0
+          },
+          "top5": {
+            "exact_order_match_fraction": 0.0,
+            "k": 5,
+            "mean_overlap_count": 2.2576687116564416,
+            "mean_overlap_fraction": 0.4515337423312883,
+            "median_overlap_count": 2.0
+          }
+        },
+        "paper_gnn_vs_human": {
+          "top10": {
+            "exact_order_match_fraction": 0.0,
+            "k": 10,
+            "mean_overlap_count": 5.730061349693251,
+            "mean_overlap_fraction": 0.5730061349693252,
+            "median_overlap_count": 6.0
+          },
+          "top5": {
+            "exact_order_match_fraction": 0.0,
+            "k": 5,
+            "mean_overlap_count": 2.233128834355828,
+            "mean_overlap_fraction": 0.4466257668711656,
+            "median_overlap_count": 2.0
+          }
+        }
+      }
+    }
+  }
+}
